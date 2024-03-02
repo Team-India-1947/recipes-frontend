@@ -30,10 +30,18 @@ The included data provider use [ra-data-json-server](https://github.com/marmelab
 
 You'll find an `.env` file at the project root that includes a `VITE_JSON_SERVER_URL` variable. Set it to the URL of your backend. By default, we set it to targets [JSONPlaceholder](https://jsonplaceholder.typicode.com/).
 
-| Method | Endpoint     | Data sent                                                        | Action                         | Data expected                                                      |
-| ------ | ------------ | ---------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ |
-| GET    | /recipes     |                                                                  | Retrieve the list of recipes   | `[{ id: number, title: string, timestamp: number, body, string }]` |
-| GET    | /recipes/:id |                                                                  | Retrieve the a specific recipe | `{ id: number, title: string, timestamp: number, body, string }`   |
-| POST   | /recipes     | `{ image: bites, vegetarian: bool }`                             | Create a new recipe            | `{ id: number, title: string, timestamp: number, body, string }`   |
-| PUT    | /recipes/:id | `{ id: number, title: string, timestamp: number, body, string }` | Update a recipe                |                                                                    |
-| DELETE | /recipes/:id |                                                                  | Delete a recipe                |                                                                    |
+## Net endpoint
+
+| Method | Endpoint     | Data sent                         | Action                         | Data expected                                                     |
+| ------ | ------------ | --------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| GET    | /recipes     |                                   | Retrieve the list of recipes   | `[{ id: number, title: string, timestamp: number, body: string}]` |
+| GET    | /recipes/:id |                                   | Retrieve the a specific recipe | `{ id: number, title: string, timestamp: number, body: string }`  |
+| POST   | /recipes     | `{ title: string, body: string }` | Create a new recipe            | `{ id: number, title: string, timestamp: number, body: string }`  |
+| PUT    | /recipes/:id | `{ title: string, body: string }` | Update a recipe                | `{ id: number, title: string, timestamp: number, body: string }`  |
+| DELETE | /recipes/:id |                                   | Delete a recipe                |
+
+## Flask endpoint
+
+| Method | Endpoint | Data sent                            | Action              | Data expected                                            |
+| ------ | -------- | ------------------------------------ | ------------------- | -------------------------------------------------------- |
+| POST   | /recipes | `{ image: bites, vegetarian: bool }` | Create a new recipe | `{ title: string, body: string, ingredients: [string] }` |

@@ -10,3 +10,9 @@ export interface RecipeGeneration {
   image: Uint8Array;
   vegetarian: boolean;
 }
+
+export interface RecipeGenerationResponse {
+  title: string;
+  body: string;
+  ingredients: string[];
+}
