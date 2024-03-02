@@ -38,6 +38,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_JSON_SERVER_URL: ${{ secrets.VITE_JSON_SERVER_URL }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
