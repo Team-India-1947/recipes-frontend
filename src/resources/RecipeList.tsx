@@ -5,8 +5,12 @@ import {
   DateField,
   FilterLiveSearch,
   useListContext,
+  useGetIdentity,
+  Button,
+  useLogout,
 } from "react-admin";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { Logout } from "@mui/icons-material";
 import { useLocation, matchPath } from "react-router-dom";
 
 import RecipeEdit from "./RecipeEdit";
@@ -40,6 +44,8 @@ export default function RecipeList() {
   //   const redirect = useRedirect();
   const location = useLocation();
   const match = matchPath(`/${resource}/:id`, location.pathname);
+  const user = useGetIdentity();
+  const logout = useLogout();
 
   return (
     <Box display="flex" width="100%">
@@ -50,6 +56,22 @@ export default function RecipeList() {
         height="100vh"
         flexDirection="column"
       >
+        <Box
+          m={1}
+          border="solid 1px #ccc"
+          width="100%"
+          display="flex"
+          justifyContent="space-between"
+        >
+          <Typography variant="h6" textAlign="center">
+            {user.identity?.firstName || "Anonymous"}
+          </Typography>
+          <Button
+            startIcon={<Logout />}
+            label="Logout"
+            onClick={logout}
+          ></Button>
+        </Box>
         <Box m={1} border="solid 1px #ccc" width="100%">
           <CreateRecipeButton />
         </Box>

@@ -1,7 +1,6 @@
 import {
   BooleanInput,
   Create,
-  FormDataConsumer,
   ImageField,
   ImageInput,
   SaveButton,

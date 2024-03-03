@@ -1,4 +1,4 @@
-import { Admin, Resource, defaultTheme, Login } from "react-admin";
+import { Admin, Resource, defaultTheme, CustomRoutes } from "react-admin";
 import { dataProvider } from "./dataProvider";
 import indigo from "@mui/material/colors/indigo";
 import pink from "@mui/material/colors/pink";
@@ -6,6 +6,9 @@ import red from "@mui/material/colors/red";
 import RecipeList from "./resources/RecipeList";
 import AppLayout from "./layout/AppLayout";
 import authProvider from "./authProvider";
+import AppLogin from "./layout/AppLogin";
+import { Route } from "react-router-dom";
+import AppRegister from "./layout/AppRegister";
 
 const indianTheme = {
   ...defaultTheme,
@@ -47,8 +50,11 @@ export const App = () => (
     theme={indianTheme}
     layout={AppLayout}
     authProvider={authProvider}
-    loginPage={Login}
+    loginPage={AppLogin}
   >
     <Resource name="recipes" list={RecipeList} />
+    <CustomRoutes>
+      <Route path="/register" element={<AppRegister />} />
+    </CustomRoutes>
   </Admin>
 );

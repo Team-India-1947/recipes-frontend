@@ -50,7 +50,7 @@ function addUploadFeature(dataProvider: DataProvider) {
     const json: RecipeGenerationResponse = response.json;
     const ingredients = json.ingredients
       .map((ingredient) => ingredient.trim())
-      .join("\n ");
+      .join("\n");
     const data = {
       title: json.title,
       body: `Ingredients:\n${ingredients}\n\n${json.body}`,

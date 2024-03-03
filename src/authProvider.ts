@@ -1,5 +1,5 @@
 type Props = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -8,6 +8,12 @@ type LoginResponse = {
   accessToken: string;
   expiresIn: number;
   refreshToken: string;
+};
+
+type UserInfoResponse = {
+  email: string;
+  firstName: string;
+  lastName: string;
 };
 
 async function getResponse(request: Request) {
@@ -45,6 +51,18 @@ async function refreshToken() {
   JWT.setToken(accessToken);
 }
 
+async function getUserInfo(): Promise<UserInfoResponse> {
+  const request = new Request(
+    `${import.meta.env.VITE_JSON_SERVER_URL}/user-info`,
+    {
+      method: "GET",
+      headers: new Headers({ "Content-Type": "application/json" }),
+    }
+  );
+  request.headers.set("Authorization", `Bearer ${JWT.getToken()}`);
+  return getJsonResponse(request);
+}
+
 export class JWT {
   static getToken() {
     return localStorage.getItem("token");
@@ -74,12 +92,12 @@ export class JWT {
 }
 
 export default {
-  login: async ({ username, password }: Props) => {
+  login: async ({ email, password }: Props) => {
     const request = new Request(
       `${import.meta.env.VITE_JSON_SERVER_URL}/login`,
       {
         method: "POST",
-        body: JSON.stringify({ email: username, password }),
+        body: JSON.stringify({ email, password }),
         headers: new Headers({ "Content-Type": "application/json" }),
       }
     );
@@ -89,13 +107,21 @@ export default {
   },
   // when the dataProvider returns an error, check if this is an authentication error
   checkError: async () => {
-    console.log("checkError");
+    try {
+      await getUserInfo();
+    } catch {
+      JWT.eraseToken();
+    }
     if (!JWT.getToken() && JWT.getRefreshToken()) await refreshToken();
     if (!JWT.getToken()) throw new Error("Not authenticated");
   },
   // when the user navigates, make sure that their credentials are still valid
   checkAuth: async () => {
-    console.log("checkAuth");
+    try {
+      await getUserInfo();
+    } catch {
+      JWT.eraseToken();
+    }
     if (!JWT.getToken() && JWT.getRefreshToken()) await refreshToken();
     if (!JWT.getToken()) throw new Error("Not authenticated");
   },
@@ -120,7 +146,8 @@ export default {
   },
   // get the user's profile
   getIdentity: async () => {
-    return { id: 0 };
+    const res = await getUserInfo();
+    return { id: 0, ...res };
   },
   getPermissions: async () => {},
 };
