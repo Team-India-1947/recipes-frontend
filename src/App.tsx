@@ -1,10 +1,11 @@
-import { Admin, Resource, defaultTheme } from "react-admin";
+import { Admin, Resource, defaultTheme, Login } from "react-admin";
 import { dataProvider } from "./dataProvider";
 import indigo from "@mui/material/colors/indigo";
 import pink from "@mui/material/colors/pink";
 import red from "@mui/material/colors/red";
 import RecipeList from "./resources/RecipeList";
 import AppLayout from "./layout/AppLayout";
+import authProvider from "./authProvider";
 
 const indianTheme = {
   ...defaultTheme,
@@ -41,7 +42,13 @@ const indianTheme = {
 };
 
 export const App = () => (
-  <Admin dataProvider={dataProvider} theme={indianTheme} layout={AppLayout}>
-    <Resource name="users" list={RecipeList} />
+  <Admin
+    dataProvider={dataProvider}
+    theme={indianTheme}
+    layout={AppLayout}
+    authProvider={authProvider}
+    loginPage={Login}
+  >
+    <Resource name="recipes" list={RecipeList} />
   </Admin>
 );

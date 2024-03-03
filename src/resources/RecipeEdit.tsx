@@ -2,6 +2,7 @@ import { EditBase, Form, TextInput } from "react-admin";
 import { Box } from "@mui/material";
 import type { Recipe } from "../types";
 import EditCompositionButton from "./EditRecipeButton";
+import DeleteRecipeButton from "./DeleteRecipeButton";
 
 type Props = {
   id: number;
@@ -18,6 +19,7 @@ export default function RecipeEdit({ id }: Props) {
         title: data.title || "Untitled",
       })}
       component="div"
+      redirect="edit"
     >
       <Box m={2} height="100%">
         <Form key={id}>
@@ -47,6 +49,7 @@ export default function RecipeEdit({ id }: Props) {
               height: "calc(100vh - 110px)",
             }}
           />
+          <DeleteRecipeButton />
           <EditCompositionButton />
         </Form>
       </Box>

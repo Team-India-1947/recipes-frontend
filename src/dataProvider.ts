@@ -1,6 +1,16 @@
 import jsonServerProvider from "ra-data-json-server";
-import { DataProvider, fetchUtils } from "react-admin";
+import { DataProvider, fetchUtils, Options } from "react-admin";
 import type { RecipeGeneration, RecipeGenerationResponse } from "./types";
+import { JWT } from "./authProvider";
+
+function httpClient(url: string, options: Options = {}) {
+  if (!options.headers) {
+    options.headers = new Headers({ Accept: "application/json" });
+  }
+  //@ts-ignore
+  options.headers.set("Authorization", `Bearer ${JWT.getToken()}`);
+  return fetchUtils.fetchJson(url, options);
+}
 
 /**
  * Convert a `File` object returned by the upload input into a base 64 string.
@@ -8,6 +18,7 @@ import type { RecipeGeneration, RecipeGenerationResponse } from "./types";
  * enough to illustrate the idea of data provider decoration.
  */
 function convertFileToBase64(file: any): Promise<string> {
+  if (file === undefined) return Promise.resolve("");
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file.rawFile);
@@ -25,6 +36,7 @@ function addUploadFeature(dataProvider: DataProvider) {
   ) => {
     if (resource !== "recipes") return dataProvider.create(resource, params);
     const base64Image = await convertFileToBase64(params.data.image);
+    if (!base64Image) return Promise.reject("Error: No image");
     const response = await fetchUtils.fetchJson(
       import.meta.env.VITE_FLASK_SERVER_URL + "/recipes",
       {
@@ -36,7 +48,9 @@ function addUploadFeature(dataProvider: DataProvider) {
       }
     );
     const json: RecipeGenerationResponse = response.json;
-    const ingredients = json.ingredients.join("\n ");
+    const ingredients = json.ingredients
+      .map((ingredient) => ingredient.trim())
+      .join("\n ");
     const data = {
       title: json.title,
       body: `Ingredients:\n${ingredients}\n\n${json.body}`,
@@ -44,7 +58,7 @@ function addUploadFeature(dataProvider: DataProvider) {
     };
     console.log(data);
 
-    return await create(resource, {
+    return create(resource, {
       ...params,
       data,
     });
@@ -53,5 +67,5 @@ function addUploadFeature(dataProvider: DataProvider) {
 }
 
 export const dataProvider = addUploadFeature(
-  jsonServerProvider(import.meta.env.VITE_JSON_SERVER_URL)
+  jsonServerProvider(import.meta.env.VITE_JSON_SERVER_URL, httpClient)
 );

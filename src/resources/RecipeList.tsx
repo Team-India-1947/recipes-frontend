@@ -23,7 +23,7 @@ function shorten(str: string, maxLen: number = 30) {
   return str.length > maxLen ? str.slice(0, maxLen - 3) + "..." : str;
 }
 
-const resource = "users";
+const resource = "recipes";
 
 const EmptyTooltip = <></>;
 
